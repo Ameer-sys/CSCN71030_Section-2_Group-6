@@ -5,7 +5,8 @@ Team Members
   3. Ishaq Ishaq Nasiru
      
 Team Project
-. Digital task management tool​
+. <h2>Digital task management tool​ </h2>
+<br>
 . Helps customers organize and track personal and professional tasks.​
 . Allows users to split their task into different buckets for ease of use.​
 . Supports Management of Task with the following features:​
