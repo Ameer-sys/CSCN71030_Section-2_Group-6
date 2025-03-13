@@ -3,11 +3,11 @@
 #include <iostream>
 
 // Define User Module
-typedef struct User {
+typedef struct user {
 	char fullName[2][256];
 	char alias[64];
 	int role;
-};
+} User;
 
 // Functions operating in User Module
 User createNewUser(char lastName[], char firstName[], int role, char alias[] = NULL);	// Function that adds new user in database

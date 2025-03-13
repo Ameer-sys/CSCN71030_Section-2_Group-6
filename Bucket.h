@@ -3,11 +3,11 @@
 #include "Task.h"
 
 // Define Bucket structure
-typedef struct Bucket {
+typedef struct bucket {
 	int id;
 	char title[256];
 	Task taskList[100];
-};
+} Bucket;
 
 // Funtions in Bucket Module
 void displayTaskList(Bucket bucket);

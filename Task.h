@@ -5,7 +5,7 @@
 #include "Task.h"
 
 // Define Task structure
-typedef struct Task {
+typedef struct task {
 	char title[256];
 	int priority;
 	int status;
@@ -13,7 +13,7 @@ typedef struct Task {
 	time_t dueDate;
 	char description[1024];
 	User assignedUsers[10];
-};
+} Task;
 
 // Functions operating in Task Module
 void displayTaskDetails(int taskId);			// Function to display a specific task in the terminal
