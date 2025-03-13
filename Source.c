@@ -2,8 +2,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "Bucket.h"
 
 int main(void) {
+	loadBucketData();
+
 	printf("Welcome to To Do List Application\n");
 
 	while (1) {

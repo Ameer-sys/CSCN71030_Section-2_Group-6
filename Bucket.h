@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Task.h"
-
 // Define Bucket structure
 typedef struct bucket {
 	int id;
 	char title[256];
-	Task taskList[100];
+	int taskIds[100];
 } Bucket;
 
+Bucket* bucketArray;
+
 // Funtions in Bucket Module
-void displayTaskList(Bucket bucket);
-void addTask();
-void editTask(int taskId);
-void deleteTask(int taskId);
+void loadBucketData();
+void displayTaskList();
+void editBucketTitle(int bucketId, char newTitle[]);
+void createBucket(char title[]);
+void deleteBucket(int bucketId);
+void closeBucketModule();
