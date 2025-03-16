@@ -44,9 +44,6 @@ void loadBucketData() {
 
         // Initialize taskIds array and counter
         bucket.taskCount = 0;
-        for (int i = 0; i < MAX_TASKS_PER_BUCKET; i++) {
-            bucket.taskIds[i] = -1; // Initialize with a sentinel value
-        }
 
         // Load task IDs
         while ((token = strtok(NULL, ",")) != NULL) {
@@ -102,12 +99,8 @@ void displayAllBuckets() {
 
 void editBucketTitle() {
     int bucketId;
-    char newTitle[256];
-
     printf("Enter the ID of the bucket to edit: ");
     scanf("%d", &bucketId);
-    printf("Enter the new title for the bucket: ");
-    scanf(" %[^\n]s", newTitle); // Read line with spaces
 
     int bucketIndex = -1;
     for (int i = 0; i < bucketCount; i++) {
@@ -118,9 +111,13 @@ void editBucketTitle() {
     }
 
     if (bucketIndex == -1) {
-        printf("Bucket with ID %d not found.\n", bucketId);
+        printf("Bucket with ID %d not found!\n", bucketId);
         return;
     }
+
+    char newTitle[256];
+    printf("Enter the new title for the bucket: ");
+    scanf(" %[^\n]s", newTitle); // Read line with spaces
 
     strcpy(bucketArray[bucketIndex].title, newTitle);
     printf("Bucket title updated successfully.\n");
@@ -156,10 +153,6 @@ void createBucket() {
     newBucket.createdBy = 0; // Or DEFAULT_USER_ID;
     newBucket.taskCount = 0;
 
-    for (int i = 0; i < MAX_TASKS_PER_BUCKET; i++) {
-        newBucket.taskIds[i] = -1; // Initialize task IDs
-    }
-
     if (bucketCount == 0) {
         bucketArray = (Bucket*)malloc(sizeof(Bucket));
     }
@@ -190,7 +183,7 @@ void deleteBucket() {
     }
 
     if (bucketIndex == -1) {
-        printf("Bucket with ID %d not found.\n", bucketId);
+        printf("Bucket with ID %d not found!\n", bucketId);
         return;
     }
 
@@ -199,7 +192,7 @@ void deleteBucket() {
         bucketArray[i] = bucketArray[i + 1];
     }
 
-    bucketCount--;
+    bucketCount -= 1;
     bucketArray = (Bucket*)realloc(bucketArray, sizeof(Bucket) * bucketCount);
 
     printf("Bucket with ID %d deleted.\n", bucketId);
