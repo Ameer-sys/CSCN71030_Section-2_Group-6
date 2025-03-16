@@ -1,18 +1,26 @@
 #pragma once
 
+#include <time.h>
+
+#define MAX_TASKS_PER_BUCKET 100
+
 // Define Bucket structure
 typedef struct bucket {
 	int id;
 	char title[256];
-	int taskIds[100];
+	time_t createdDate;
+	int createdBy;
+	int taskIds[MAX_TASKS_PER_BUCKET];
+	int taskCount;
 } Bucket;
 
 Bucket* bucketArray;
 
 // Funtions in Bucket Module
 void loadBucketData();
-void displayTaskList();
-void editBucketTitle(int bucketId, char newTitle[]);
-void createBucket(char title[]);
-void deleteBucket(int bucketId);
+void displayAllBuckets();
+void editBucketTitle();
+void createBucket();
+void deleteBucket();
 void closeBucketModule();
+void saveBucketToFile();
