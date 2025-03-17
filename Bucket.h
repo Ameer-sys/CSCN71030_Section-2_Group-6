@@ -16,10 +16,12 @@ typedef struct bucket {
 
 Bucket* bucketArray;
 int bucketCount;
+Bucket* currentBucket;
 
 // Funtions in Bucket Module
 void loadBucketData();
 void displayAllBuckets();
+void navigateToBucket();
 void editBucketTitle();
 void createBucket();
 void deleteBucket();

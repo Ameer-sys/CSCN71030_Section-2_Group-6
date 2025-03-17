@@ -9,6 +9,7 @@
 
 Bucket* bucketArray = NULL;
 int bucketCount = 0; // Keep track of the number of buckets
+Bucket* currentBucket = NULL;
 
 void loadBucketData() {
     FILE* dataFile;
@@ -77,9 +78,9 @@ void displayAllBuckets() {
     }
 
     printf("--- Bucket List ---\n");
-    printf("+--------+----------------------+--------------------------+--------------+\n");
-    printf("|   ID   |        Title         |       Created Date       | Created By   |\n");
-    printf("+--------+----------------------+--------------------------+--------------+\n");
+    printf("+--------+----------------------+--------------------------+----------------------+\n");
+    printf("|   ID   |        Title         |       Created Date       |       Created By     |\n");
+    printf("+--------+----------------------+--------------------------+----------------------+\n");
 
     for (int i = 0; i < bucketCount; i++) {
         printf("| %6d | %20s | ", bucketArray[i].id, bucketArray[i].title);
@@ -91,10 +92,29 @@ void displayAllBuckets() {
         // Format the date and time
         char formattedTime[20];
         strftime(formattedTime, sizeof(formattedTime), "%m/%d/%Y %H:%M:%S", timeinfo);
-        printf("%24s | %12s |\n", formattedTime, "Bob");
+        printf("%24s ", formattedTime);
+
+        User* user = getUserById(bucketArray[i].createdBy);
+        if (user != NULL){
+            printf("| %8s (%8s) |\n", user->Name[0], user->role ? "Employee" : "Admin");
+        }
     }
 
-    printf("+--------+----------------------+--------------------------+--------------+\n");
+    printf("+--------+----------------------+--------------------------+----------------------+\n");
+}
+
+void navigateToBucket()
+{
+    int bucketId;
+    printf("Enter ID of bucket you'd like to navigate to: ");
+    scanf("%d", &bucketId);
+
+    for (int i = 0; i < bucketCount; i++) {
+        if (bucketArray[i].id == bucketId) {
+            currentBucket = &bucketArray[i];
+            break;
+        }
+    }
 }
 
 void editBucketTitle() {

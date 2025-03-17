@@ -10,6 +10,19 @@ User* userList = NULL;
 int userCount = 0;
 int loggedUser = -1;
 int isAdmin = 0;
+
+
+User* getUserById(int userId)
+{
+    for (int i = 0; i < userCount; i++) {
+        if (userList[i].userID == userId) {
+            return &userList[i];
+        }
+    }
+
+    return NULL;
+}
+
 User* registerUser() {
     srand(time(NULL));
     userCount += 1;  //increases the userCount of the userList for each person the registers
@@ -51,6 +64,27 @@ User* registerUser() {
     saveUserList(userList, userCount);
     printf("User registered successfully!\n");
     return userList;
+}
+
+void displayAllUsers()
+{
+    printf("--- User List ---\n");
+    printf("+--------+----------------------+--------------------------+--------------+\n");
+    printf("|   ID   |         Name         |           Email          |      Role    |\n");
+    printf("+--------+----------------------+--------------------------+--------------+\n");
+
+    for (int i = 0; i < userCount; i++) {
+        char roleStr[16];
+        if (userList[i].role == 0) {
+            strcpy(roleStr, "Admin");
+        }
+        else {
+            strcpy(roleStr, "Employee");
+        }
+        printf("| %6d | %10s %9s | %24s | %12s |\n", userList[i].userID, userList[i].Name[0], userList[i].Name[1], userList[i].email, roleStr);
+    }
+
+    printf("+--------+----------------------+--------------------------+--------------+\n");
 }
 
 void deleteUser() {
