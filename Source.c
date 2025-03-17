@@ -2,8 +2,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include "Bucket.h"
 
 int main(void) {
+	loadBucketData();
+
 	printf("Welcome to To Do List Application\n");
 
 	while (1) {
@@ -11,18 +15,18 @@ int main(void) {
 		printf("To choose a function, enter its letter label:\n");
 		printf("+ Bucket Management\n");
 		printf("a) Display all buckets\n");
-		printf("e) Navigate to a bucket\n");
-		printf("b) Edit bucket title\n");
-		printf("c) Create new bucket\n");
-		printf("d) Delete a bucket\n");
+		printf("b) Navigate to a bucket\n");
+		printf("c) Edit bucket title\n");
+		printf("d) Create new bucket\n");
+		printf("e) Delete a bucket\n");
 		printf("\n");
 		
 		printf("+ User Management\n");
-		printf("e) Create new user\n");
-		printf("f) Edit user info\n");
-		printf("g) Delete a user\n");
-		printf("h) Search tasks assigned to a user\n");
-		printf("i) Exit\n");
+		printf("f) Create new user\n");
+		printf("g) Edit user info\n");
+		printf("h) Delete a user\n");
+		printf("i) Search tasks assigned to a user\n");
+		printf("k) Exit\n");
 
 		char option[2];
 		printf("Enter your option from a-i: ");
@@ -30,14 +34,18 @@ int main(void) {
 
 		switch (option[0]) {
 		case 'a':
+			displayAllBuckets();
 			break;
 		case 'b':
 			break;
 		case 'c':
+			editBucketTitle();
 			break;
 		case 'd':
+			createBucket();
 			break;
 		case 'e':
+			deleteBucket();
 			break;
 		case 'f':
 			break;
@@ -46,6 +54,9 @@ int main(void) {
 		case 'h':
 			break;
 		case 'i':
+			break;
+		case 'k':
+			closeBucketModule();
 			exit(0);
 			break;
 		default:
