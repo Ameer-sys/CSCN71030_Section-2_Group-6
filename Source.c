@@ -4,13 +4,44 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Bucket.h"
+#include "User.h"
 
 int main(void) {
 	loadBucketData();
+	initializeUserList();
 
 	printf("Welcome to To Do List Application\n");
 
 	while (1) {
+		if (loggedUser != -1) break;
+		printf("\nChoose an option:\n");
+		printf("1) Register\n");
+		printf("2) Login\n");
+		printf("3) Exit\n");
+		printf("Enter option: ");
+		int choice;
+		scanf("%d", &choice);
+
+		switch (choice) {
+		case 1:
+			registerUser();
+			saveUserList();
+			break;
+		case 2:
+			loginUser();
+			break;
+		case 3:
+			printf("Exiting...\n");
+			closeUserModule();
+			break;
+		default:
+			printf("Invalid option! Try again.\n");
+			break;
+		}
+	}
+
+	while (1) {
+		if (loggedUser == -1) break;
 		printf("\n");
 		printf("To choose a function, enter its letter label:\n");
 		printf("+ Bucket Management\n");
@@ -22,11 +53,16 @@ int main(void) {
 		printf("\n");
 		
 		printf("+ User Management\n");
-		printf("f) Create new user\n");
-		printf("g) Edit user info\n");
-		printf("h) Delete a user\n");
-		printf("i) Search tasks assigned to a user\n");
-		printf("k) Exit\n");
+		printf("f) View my profile\n");
+		printf("g) Update my profile\n");
+		printf("h) Delete My Account\n");
+
+		printf("+ Administration\n");
+		printf("i) Create new user\n");
+		printf("j) Edit a user\n");
+		printf("k) Delete a user\n");
+		printf("l) Search tasks assigned to a user\n");
+		printf("m) Exit\n");
 
 		char option[2];
 		printf("Enter your option from a-i: ");
@@ -48,15 +84,30 @@ int main(void) {
 			deleteBucket();
 			break;
 		case 'f':
+			viewUser();
 			break;
 		case 'g':
+			updateUser();
+			saveUserList();
 			break;
 		case 'h':
+			deleteUser();
+			saveUserList();
+			loggedUser = -1;
 			break;
 		case 'i':
 			break;
+		case 'j':
+			updateUser();
+			break;
 		case 'k':
+			deleteUser();
+			break;
+		case 'l':
+			break;
+		case 'm':
 			closeBucketModule();
+			closeUserModule();
 			exit(0);
 			break;
 		default:

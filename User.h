@@ -18,12 +18,18 @@ typedef struct {
 	int role;
 } User;
 
+User* userList;
+int userCount;
+int loggedUser;
+//User loggedInUser;
+
 //functions
-User* registerUser(User* List, int* size);  //register user
-void deleteUser(User* List, int* size, int loggeduser);  //delete user
-void updateUser(User* List, int size, int loggeduser);   //update user
-void saveList(User* List, int* size);        //save data
-void loadList(User** List, int* size);      //load data
-void viewUser(User* List, int size, int loggeduser);  //view profiles
-void initializeList(User** List, int* size); //initialize list
-int loginUser(User* List, int size);        //login function
+User* registerUser();  //register user
+void deleteUser();  //delete user
+void updateUser();   //update user
+void saveUserList();        //save data
+void loadUserList();      //load data
+void viewUser();  //view profiles
+void initializeUserList(); //initialize list
+void loginUser();        //login function
+void closeUserModule();

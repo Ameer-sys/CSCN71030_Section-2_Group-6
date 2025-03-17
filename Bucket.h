@@ -15,6 +15,7 @@ typedef struct bucket {
 } Bucket;
 
 Bucket* bucketArray;
+int bucketCount;
 
 // Funtions in Bucket Module
 void loadBucketData();
