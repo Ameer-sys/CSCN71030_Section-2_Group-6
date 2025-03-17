@@ -9,7 +9,7 @@
 User* userList = NULL;
 int userCount = 0;
 int loggedUser = -1;
-
+int isAdmin = 0;
 User* registerUser() {
     srand(time(NULL));
     userCount += 1;  //increases the userCount of the userList for each person the registers
@@ -153,91 +153,35 @@ void updateUser() {
         return;
     }
 
-    int userIndex = -1;
-    int isAdmin = 0;
-
-    //checks for admin
-    for (int i = 0; i < userCount; i++) {
-        if (userList[i].userID == loggedUser) {
-            userIndex = i;
-            isAdmin = (userList[i].role == ROLE_ADMIN);
-            break;
-        }
-    }
-
-    if (userIndex == -1) {
-        printf("User not found!\n");
-        return;
-    }
-
-    int targetUserID;
-    int targetIndex;
-
-    //admin can update any account
     if (isAdmin) {
-        printf("Enter user ID to update (enter your own ID to update your account): ");
-        scanf_s("%d", &targetUserID);
+      
+        
+    }
+    else {
+       
+        printf("Enter new last name: ");
+        scanf_s("%s", loggedInUser.Name[0], MAX_LENGTH);
 
-        //goes to targeted user
-        targetIndex = -1;
+        printf("Enter new first name: ");
+        scanf_s("%s", loggedInUser.Name[1], MAX_LENGTH);
+
+        printf("Enter new email: ");
+        scanf_s("%s", loggedInUser.email, MAX_LENGTH);
+
+        printf("Enter new password: ");
+        scanf_s("%s", loggedInUser.password, MAX_LENGTH);
+
+        
         for (int i = 0; i < userCount; i++) {
-            if (userList[i].userID == targetUserID) {
-                targetIndex = i;
+            if (userList[i].userID == loggedInUser.userID) {
+                userList[i] = loggedInUser;
                 break;
             }
         }
 
-        if (targetIndex == -1) {
-            printf("Target user not found!\n");
-            return;
-        }
+        saveUserList();
+        printf("User updated successfully!\n");
     }
-    else {
-        //users can only update their own account
-        targetIndex = userIndex;
-    }
-
-    printf("Enter new last name: ");
-    scanf_s("%s", userList[targetIndex].Name[0], MAX_LENGTH);
-
-    printf("Enter new first name: ");
-    scanf_s("%s", userList[targetIndex].Name[1], MAX_LENGTH);
-
-    printf("Enter new email: ");
-    scanf_s("%s", userList[targetIndex].email, MAX_LENGTH);
-
-    printf("Enter new password: ");
-    scanf_s("%s", userList[targetIndex].password, MAX_LENGTH);
-
-    //only admins can change roles
-    if (isAdmin) {
-        int newRole;
-        printf("Enter new role (0 for Employee, 1 for Admin): ");
-        scanf_s("%d", &newRole);
-
-        //
-        if (userList[targetIndex].role == ROLE_ADMIN && newRole != ROLE_ADMIN) {
-            int adminCount = 0;
-            for (int j = 0; j < userCount; j++) {
-                if (userList[j].role == ROLE_ADMIN) {
-                    adminCount++;
-                }
-            }
-
-            if (adminCount <= 1) {
-                printf("Cannot demote the only admin account! Role unchanged.\n");
-            }
-            else {
-                userList[targetIndex].role = newRole;
-            }
-        }
-        else {
-            userList[targetIndex].role = newRole;
-        }
-    }
-
-    saveUserList(userList, &userCount);  //save data
-    printf("User updated successfully!\n");
 }
 
 void viewUser() {
@@ -246,100 +190,111 @@ void viewUser() {
         return;
     }
 
-    int isAdmin = 0;
-
-    //checks if the admin is the one logged in
-    for (int i = 0; i < userCount; i++) {
-        if (userList[i].userID == loggedUser && userList[i].role == ROLE_ADMIN) {
-            isAdmin = 1;
-            break;
-        }
-    }
-
     if (isAdmin) {
-        //admin can choose between all users or a speficifc one
-        int choice;
-        printf("1. View all users\n");
-        printf("2. View specific user\n");
-        printf("Choose an option: ");
-        scanf_s("%d", &choice);
-
-        if (choice == 1) {//this will print all users
-            printf("\nAll Users:\n");
-            printf("%-10s %-20s %-20s %-30s %-10s\n", "ID", "Last Name", "First Name", "Email", "Role");
-            printf("--------------------------------------------------------------------------------\n");
-
-            for (int i = 0; i < userCount; i++) {
-                printf("%-10d %-20s %-20s %-30s %-10s\n",
-                    userList[i].userID,
-                    userList[i].Name[0],
-                    userList[i].Name[1],
-                    userList[i].email,
-                    userList[i].role == ROLE_ADMIN ? "Admin" : "Employee");
-            }
-            return;
-        }
-    }
-
-    // 
-    int userID;
-    if (isAdmin) {
-        printf("Enter user ID to view: ");
-        scanf_s("%d", &userID);
+      
     }
     else {
-        //users can only view their own profile
-        userID = loggedUser;
-    }
-
-    for (int i = 0; i < userCount; i++) {
-        if (userList[i].userID == userID) {
-            printf("\nUser Profile:\n");
-            printf("User ID: %d\n", userList[i].userID);
-            printf("Name: %s %s\n", userList[i].Name[1], userList[i].Name[0]);
-            printf("Email: %s\n", userList[i].email);
-            printf("Role: %s\n", userList[i].role == ROLE_ADMIN ? "Administrator" : "Employee");
-            return;
-        }
-    }
-
-    if (isAdmin) {
-        printf("User not found!\n");
+        
+        printf("\nUser Profile:\n");
+        printf("User ID: %d\n", loggedInUser.userID);
+        printf("Name: %s %s\n", loggedInUser.Name[1], loggedInUser.Name[0]);
+        printf("Email: %s\n", loggedInUser.email);
+        printf("Role: %s\n", loggedInUser.role == ROLE_ADMIN ? "Administrator" : "Employee");
     }
 }
 
 void initializeUserList() {
-    userList = NULL;  //make userList empty
+    userList = NULL;  //make userList 
     userCount = 0;
     loadUserList(userList, userCount);  //loads data that might already exist
 }
 
 void loginUser() {
-    char email[MAX_LENGTH], password[MAX_LENGTH];//asks for email and password
+    char email[MAX_LENGTH], password[MAX_LENGTH];
     printf("Enter email: ");
     scanf_s("%s", email, MAX_LENGTH);
     printf("Enter password: ");
     scanf_s("%s", password, MAX_LENGTH);
 
-    for (int i = 0; i < userCount; i++) {//goes through each user and checks if the passowrd and email match
-        if (strcmp(userList[i].email, email) == 0 && strcmp(userList[i].password, password) == 0) {//if the email and passowrd of the userList match the email and passowrd inputed it logs you in
-            printf("Login successful! Welcome, %s %s\n", userList[i].Name[1], userList[i].Name[0]);
-            if (userList[i].role == ROLE_ADMIN) {//if your role is admin it printd its out
+    for (int i = 0; i < userCount; i++) {
+        if (strcmp(userList[i].email, email) == 0 && strcmp(userList[i].password, password) == 0) {
+           
+            loggedUser = userList[i].userID;
+
+        
+            loggedInUser = userList[i];
+
+        
+            isAdmin = (loggedInUser.role == ROLE_ADMIN);
+
+            printf("Login successful! Welcome, %s %s\n",
+                loggedInUser.Name[1], loggedInUser.Name[0]);
+
+            if (isAdmin) {
                 printf("You are logged in as Administrator\n");
             }
             else {
-                printf("You are logged in as Employee\n");//if not admin this
+                printf("You are logged in as Employee\n");
             }
-            loggedUser = userList[i].userID;  //and when login is succsful it returns the userid and puts it into loggedUser so that other actions are verifiable
             return;
         }
     }
 
     printf("Invalid credentials!\n");
     loggedUser = -1;
+    isAdmin = 0;
+   //rests to zero
+    memset(&loggedInUser, 0, sizeof(User));
 }
 
+int createUser() {
+    srand(time(NULL));
+    userCount += 1;  
 
+    // uses realloc to resize the userList
+    userList = realloc(userList, userCount * sizeof(User));
+
+    if (userList == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+
+    // generates userIDs randomly
+    userList[userCount - 1].userID = rand() % 100;
+    printf("New UserID is: %d\n", userList[userCount - 1].userID);
+
+    printf("Enter last name: ");
+    scanf_s("%s", userList[userCount - 1].Name[0], MAX_LENGTH);
+
+    printf("Enter first name: ");
+    scanf_s("%s", userList[userCount - 1].Name[1], MAX_LENGTH);
+
+    printf("Enter email: ");
+    scanf_s("%s", userList[userCount - 1].email, MAX_LENGTH);
+
+    printf("Enter password: ");
+    scanf_s("%s", userList[userCount - 1].password, MAX_LENGTH);
+
+    
+    int roleChoice;
+    printf("Enter role (0 for Employee, 1 for Admin): ");
+    scanf_s("%d", &roleChoice);
+
+    if (roleChoice == ROLE_ADMIN || roleChoice == ROLE_EMPLOYEE) {
+        userList[userCount - 1].role = roleChoice;
+    }
+    else {
+       
+        userList[userCount - 1].role = ROLE_EMPLOYEE;
+        printf("Invalid role input. Setting as Employee by default.\n");
+    }
+
+   
+    saveUserList(userList, userCount);
+    printf("User created successfully!\n");
+
+    return 1;
+}
 void closeUserModule()
 {
     saveUserList();

@@ -40,6 +40,7 @@ int main(void) {
 		}
 	}
 
+
 	while (1) {
 		if (loggedUser == -1) break;
 		printf("\n");
@@ -51,18 +52,23 @@ int main(void) {
 		printf("d) Create new bucket\n");
 		printf("e) Delete a bucket\n");
 		printf("\n");
-		
-		printf("+ User Management\n");
-		printf("f) View my profile\n");
-		printf("g) Update my profile\n");
-		printf("h) Delete My Account\n");
 
-		printf("+ Administration\n");
-		printf("i) Create new user\n");
-		printf("j) Edit a user\n");
-		printf("k) Delete a user\n");
-		printf("l) Search tasks assigned to a user\n");
-		printf("m) Exit\n");
+		if (isAdmin) {
+			printf("+ Administration\n");
+			printf("i) Create new user\n");
+			printf("j) Edit a user\n");
+			printf("k) Delete a user\n");
+			printf("l) Search tasks assigned to a user\n");
+			printf("m) Exit\n");
+		}
+		else {
+			printf("+ User Management\n");
+			printf("f) View my profile\n");
+			printf("g) Update my profile\n");
+			printf("h) Delete My Account\n");
+			printf("i) Exit\n");
+		}
+		
 
 		char option[2];
 		printf("Enter your option from a-i: ");
@@ -83,25 +89,43 @@ int main(void) {
 		case 'e':
 			deleteBucket();
 			break;
+
 		case 'f':
-			viewUser();
+			if (!isAdmin) {
+				viewUser();
+			}
 			break;
 		case 'g':
-			updateUser();
-			saveUserList();
+			if (!isAdmin) {
+				updateUser();
+				saveUserList();
+			}
 			break;
 		case 'h':
-			deleteUser();
-			saveUserList();
-			loggedUser = -1;
+			if (!isAdmin) {
+				deleteUser();
+				saveUserList();
+				loggedUser = -1;
+			}
 			break;
 		case 'i':
+			if (isAdmin) {
+				createUser();
+				saveUserList();
+			}
 			break;
 		case 'j':
-			updateUser();
+			if (isAdmin) {
+				updateUser();
+				saveUserList();
+			}
 			break;
 		case 'k':
-			deleteUser();
+			if (isAdmin) {
+				deleteUser();
+				saveUserList();
+			}
+
 			break;
 		case 'l':
 			break;

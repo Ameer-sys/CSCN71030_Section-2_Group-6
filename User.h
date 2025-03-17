@@ -21,7 +21,8 @@ typedef struct {
 User* userList;
 int userCount;
 int loggedUser;
-//User loggedInUser;
+int isAdmin;
+User loggedInUser;
 
 //functions
 User* registerUser();  //register user
@@ -33,3 +34,4 @@ void viewUser();  //view profiles
 void initializeUserList(); //initialize list
 void loginUser();        //login function
 void closeUserModule();
+int createUser();
