@@ -1,5 +1,4 @@
 #pragma once
-#include <time.h>
 #include "User.h"
 
 // Maximum number of users that can be assigned

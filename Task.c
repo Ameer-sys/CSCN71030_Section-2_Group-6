@@ -69,10 +69,10 @@ void addTask() {
 
     // Get task priority
     do {
-        printf("Enter task priority (1-5): ");
-        int ret = scanf_s("%d", &newTask.priority);
+        printf("Enter task priority (1'high'- 5'low'): ");
+        int prio = scanf_s("%d", &newTask.priority);
         getchar();  // Clear the newline character from the input buffer
-        if (ret != 1 || newTask.priority < 1 || newTask.priority > 5) {
+        if (prio != 1 || newTask.priority < 1 || newTask.priority > 5) {
             printf("Invalid priority. Please enter a number between 1 and 5.\n");
         }
     } while (newTask.priority < 1 || newTask.priority > 5);
@@ -80,9 +80,9 @@ void addTask() {
     // Get task status
     do {
         printf("Enter task status (0: Pending, 1: In Progress, 2: Completed): ");
-        int ret = scanf_s("%d", &newTask.status);
+        int stat = scanf_s("%d", &newTask.status);
         getchar();  // Clear the newline character from the input buffer
-        if (ret != 1 || newTask.status < 0 || newTask.status > 2) {
+        if (stat != 1 || newTask.status < 0 || newTask.status > 2) {
             printf("Invalid status. Please enter 0, 1, or 2.\n");
         }
     } while (newTask.status < 0 || newTask.status > 2);
@@ -97,12 +97,24 @@ void addTask() {
         printf("Enter task start date (YYYY-MM-DD): ");
         fgets(newTask.startDate, sizeof(newTask.startDate), stdin);
         strtok(newTask.startDate, "\n");
+
+        if (!isValidDate(newTask.startDate)) {
+            printf("Invalid date format. Please enter in YYYY-MM-DD format.\n");
+        }
+
+        while (getchar() != '\n');  // Clear buffer to avoid repeated prompts
     } while (!isValidDate(newTask.startDate));
 
     do {
         printf("Enter task due date (YYYY-MM-DD): ");
         fgets(newTask.dueDate, sizeof(newTask.dueDate), stdin);
         strtok(newTask.dueDate, "\n");
+
+        if (!isValidDate(newTask.dueDate)) {
+            printf("Invalid date format. Please enter in YYYY-MM-DD format.\n");
+            while (getchar() != '\n');  // Clear input buffer
+        }
+
     } while (!isValidDate(newTask.dueDate));
 
     tasks[taskCount++] = newTask;  // Add the new task to the tasks array
