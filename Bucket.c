@@ -46,17 +46,17 @@ void loadBucketData() {
             bucket.createdBy = atoi(token);
         }
 
-        // Initialize taskIds array and counter
-        bucket.taskCount = 0;
+        //// Initialize taskIds array and counter
+        //bucket.taskCount = 0;
 
-        // Load task IDs
-        while ((token = strtok(NULL, ",")) != NULL) {
-            int taskId = atoi(token);
-            if (bucket.taskCount < MAX_TASKS_PER_BUCKET) {
-                bucket.taskIds[bucket.taskCount] = taskId;
-                bucket.taskCount++;
-            }
-        }
+        //// Load task IDs
+        //while ((token = strtok(NULL, ",")) != NULL) {
+        //    int taskId = atoi(token);
+        //    if (bucket.taskCount < MAX_TASKS_PER_BUCKET) {
+        //        bucket.taskIds[bucket.taskCount] = taskId;
+        //        bucket.taskCount++;
+        //    }
+        //}
 
         if (bucketCount == 0) {
             bucketArray = (Bucket*)malloc(sizeof(Bucket));
@@ -168,14 +168,9 @@ void createBucket() {
 
     Bucket newBucket;
     newBucket.id = newId;
-    newBucket.createdBy = loggedUser;
     strcpy(newBucket.title, title);
     newBucket.createdDate = time(NULL); // Get current time as time_t
-
-    // Set createdBy to a default user ID (e.g., 0 or 1) or a constant
-    // You might want to define a constant like DEFAULT_USER_ID
-    newBucket.createdBy = 0; // Or DEFAULT_USER_ID;
-    newBucket.taskCount = 0;
+    newBucket.createdBy = loggedUser;
 
     if (bucketCount == 0) {
         bucketArray = (Bucket*)malloc(sizeof(Bucket));
@@ -243,11 +238,11 @@ void saveBucketToFile() {
 
     for (int i = 0; i < bucketCount; i++) {
         fprintf(dataFile, "%d,%s,%ld,%d", bucketArray[i].id, bucketArray[i].title, bucketArray[i].createdDate, bucketArray[i].createdBy);
-        for (int j = 0; j < bucketArray[i].taskCount; j++) {
+        /*for (int j = 0; j < bucketArray[i].taskCount; j++) {
             if (bucketArray[i].taskIds[j] != -1) {
                 fprintf(dataFile, ",%d", bucketArray[i].taskIds[j]);
             }
-        }
+        }*/
         fprintf(dataFile, "\n");
     }
 

@@ -10,8 +10,8 @@ typedef struct bucket {
 	char title[256];
 	time_t createdDate;
 	int createdBy;
-	int taskIds[MAX_TASKS_PER_BUCKET];
-	int taskCount;
+	/*int taskIds[MAX_TASKS_PER_BUCKET];
+	int taskCount;*/
 } Bucket;
 
 Bucket* bucketArray;

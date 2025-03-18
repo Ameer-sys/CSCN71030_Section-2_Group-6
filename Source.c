@@ -8,7 +8,6 @@
 #include "Task.h"
 
 int main(void) {
-	loadBucketData();
 	initializeUserList();
 
 	printf("Welcome to To Do List Application\n");
@@ -41,6 +40,8 @@ int main(void) {
 		}
 	}
 
+	loadBucketData();
+
 	int menuId = 0;
 	while (1) {
 		if (loggedUser == -1) break;
@@ -53,6 +54,7 @@ int main(void) {
 			printf("c) Edit bucket title\n");
 			printf("d) Create new bucket\n");
 			printf("e) Delete a bucket\n");
+			printf("v) View Task details\n");
 			printf("\n");
 
 			if (isAdmin) {
@@ -91,6 +93,9 @@ int main(void) {
 				break;
 			case 'e':
 				deleteBucket();
+				break;
+			case 'v':
+				viewTask();
 				break;
 			case 'f':
 				if (!isAdmin) {

@@ -80,14 +80,12 @@ void addTask() {
     // Get task start and due date
     do {
         printf("Enter task start date (YYYY-MM-DD): ");
-        fgets(newTask.startDate, sizeof(newTask.startDate), stdin);
-        strtok(newTask.startDate, "\n");
+        scanf(" %[^\n]s", newTask.startDate);
     } while (!isValidDate(newTask.startDate));
 
     do {
         printf("Enter task due date (YYYY-MM-DD): ");
-        fgets(newTask.dueDate, sizeof(newTask.dueDate), stdin);
-        strtok(newTask.dueDate, "\n");
+        scanf(" %[^\n]s", newTask.dueDate);
     } while (!isValidDate(newTask.dueDate));
 
     tasks[taskCount++] = newTask;  // Add the new task to the tasks array

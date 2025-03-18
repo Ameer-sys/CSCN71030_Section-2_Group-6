@@ -75,7 +75,7 @@ void displayAllUsers()
 
     for (int i = 0; i < userCount; i++) {
         char roleStr[16];
-        if (userList[i].role == 0) {
+        if (userList[i].role == ROLE_ADMIN) {
             strcpy(roleStr, "Admin");
         }
         else {
