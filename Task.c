@@ -4,27 +4,12 @@
 #include <string.h>
 #include <time.h>
 #include "Task.h"
+#include "Bucket.h"
 
 // Global variables
 Task tasks[MAX_TASKS];  // Fixed size array for tasks
 int taskCount = 0;      // Counter for number of tasks
 
-// Function to load users from a file
-int loadUsersFromFile(User users[]) {
-    FILE* file = fopen("users.txt", "r");
-    if (!file) {
-        printf("Error opening user file.\n");
-        return 0;
-    }
-
-    int userCount = 0;
-    while (fscanf(file, "%s", users[userCount].fullName) != EOF && userCount < MAX_USERS) {
-        userCount++;
-    }
-
-    fclose(file);
-    return userCount;
-}
 
 int isDigit(char c) {
     return c >= '0' && c <= '9';
@@ -62,10 +47,10 @@ void addTask() {
 
     Task newTask;
     newTask.task_id = generateUniqueTaskId();
+    newTask.bucketId = currentBucket->id;
 
     printf("Enter task title: ");
-    fgets(newTask.title, sizeof(newTask.title), stdin);
-    strtok(newTask.title, "\n");
+    scanf(" %[^\n]s", newTask.title);
 
     // Get task priority
     do {
@@ -183,6 +168,7 @@ void editTask() {
                     printf("Invalid choice.\n");
                 }
             } while (choice != 7);
+            saveTasksToFile("task.txt");
             return;
         }
     }
@@ -200,6 +186,8 @@ void displayTasks() {
     printf("------------------------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < taskCount; i++) {
+        if (tasks[i].bucketId != currentBucket->id) continue;
+
         // Ensure startDate and dueDate are not NULL or empty
         char* start = (tasks[i].startDate[0] != '\0') ? tasks[i].startDate : "N/A";
         char* due = (tasks[i].dueDate[0] != '\0') ? tasks[i].dueDate : "N/A";
@@ -251,7 +239,6 @@ void viewTask() {
 
 void deleteTask() {
     int task_id;
-    int taskFound = 0;
 
     printf("Enter task ID to delete: ");
     int ret = scanf_s("%d", &task_id);
@@ -262,15 +249,21 @@ void deleteTask() {
         return;
     }
 
+    deleteTaskById(task_id);
+}
+
+void deleteTaskById(int taskId) {
+    int taskFound = 0;
+
     for (int i = 0; i < taskCount; i++) {
-        if (tasks[i].task_id == task_id) {
+        if (tasks[i].task_id == taskId) {
             taskFound = 1;
             for (int j = i; j < taskCount - 1; j++) {
                 tasks[j] = tasks[j + 1];
             }
 
             taskCount--;  // Reduce the task count
-            printf("Task ID %d deleted successfully.\n", task_id);
+            printf("Task ID %d deleted successfully.\n", taskId);
 
             // Save tasks immediately after deletion
             saveTasksToFile("task.txt");
@@ -279,7 +272,7 @@ void deleteTask() {
     }
 
     if (!taskFound) {
-        printf("Task ID %d not found.\n", task_id);
+        printf("Task ID %d not found.\n", taskId);
     }
 }
 
@@ -292,8 +285,9 @@ void saveTasksToFile(const char* filePath) {
     }
 
     for (int i = 0; i < taskCount; i++) {
-        fprintf(file, "%d|%s|%d|%d|%s|%s|%s\n",
+        fprintf(file, "%d|%d|%s|%d|%d|%s|%s|%s\n",
             tasks[i].task_id,
+            tasks[i].bucketId,
             tasks[i].title,
             tasks[i].priority,
             tasks[i].status,
@@ -322,8 +316,9 @@ void loadTasksFromFile(const char* filePath) {
             break;
         }
 
-        int scanned = sscanf(line, "%d|%255[^|]|%d|%d|%255[^|]|%255[^|]|%1023[^\n]",
+        int scanned = sscanf(line, "%d|%d|%255[^|]|%d|%d|%255[^|]|%255[^|]|%1023[^\n]",
             &tasks[taskCount].task_id,
+            &tasks[taskCount].bucketId,
             tasks[taskCount].title,
             &tasks[taskCount].priority,
             &tasks[taskCount].status,
@@ -347,18 +342,13 @@ void exitProgram() {
     exit(0);
 }
 
-//
-void deleteAllTasks() {
-    char confirm;
-    printf("Are you sure you want to delete all tasks? (y/n): ");
-    scanf_s(" %c", &confirm, sizeof(confirm));
-
-    if (confirm == 'y' || confirm == 'Y') {
-        taskCount = 0;  // Reset task count
-        saveTasksToFile("task.txt");  // Save the empty task list
-        printf("All tasks deleted successfully.\n");
+// Function to delete all tasks of a bucket
+void deleteAllTasksInBucket() {
+    if (currentBucket == NULL) return;
+    for (int i = 0; i < taskCount; i++) {
+        if (tasks[i].bucketId == currentBucket->id) {
+            deleteTaskById(tasks[i].task_id);
+        }
     }
-    else {
-        printf("Action cancelled. No tasks were deleted.\n");
-    }
+    printf("All tasks in bucket with ID %d are deleted.\n", currentBucket->id);
 }

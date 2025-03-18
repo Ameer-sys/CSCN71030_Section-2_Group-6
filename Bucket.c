@@ -2,6 +2,7 @@
 
 #include "Bucket.h"
 #include "User.h"
+#include "Task.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,7 +42,9 @@ void loadBucketData() {
         }
 
         token = strtok(NULL, ",");
-        bucket.createdBy = atoi(token);
+        if (token != NULL) {
+            bucket.createdBy = atoi(token);
+        }
 
         // Initialize taskIds array and counter
         bucket.taskCount = 0;
@@ -165,6 +168,7 @@ void createBucket() {
 
     Bucket newBucket;
     newBucket.id = newId;
+    newBucket.createdBy = loggedUser;
     strcpy(newBucket.title, title);
     newBucket.createdDate = time(NULL); // Get current time as time_t
 
@@ -206,6 +210,8 @@ void deleteBucket() {
         printf("Bucket with ID %d not found!\n", bucketId);
         return;
     }
+
+    deleteAllTasksInBucket();
 
     // Shift remaining elements to overwrite the deleted one
     for (int i = bucketIndex; i < bucketCount - 1; i++) {

@@ -26,13 +26,14 @@ extern int taskCount;
 
 
 // Function declarations
-int loadUsersFromFile(User users[]);  // Loads users from a file
 int generateUniqueTaskId();           // Generates a unique task ID
 void addTask();                       // Adds a new task
 void editTask();                      // Edits an existing task
 void deleteTask();                    // Deletes a task
+void deleteTaskById(int taskId);
 void saveTasksToFile(const char* filePath);  // Saves tasks to a file
 void loadTasksFromFile(const char* filePath);
 void displayTasks();                  // Displays the list of tasks
 void viewTask();
 void exitProgram();                   // Exits the program and saves tasks 
+void deleteAllTasksInBucket();

@@ -5,6 +5,7 @@
 #include <time.h>
 #include "Bucket.h"
 #include "User.h"
+#include "Task.h"
 
 int main(void) {
 	loadBucketData();
@@ -161,12 +162,16 @@ int main(void) {
 
 			switch (option[0]) {
 			case 'a':
+				displayTasks();
 				break;
 			case 'b':
+				addTask();
 				break;
 			case 'c':
+				editTask();
 				break;
 			case 'd':
+				deleteTask();
 				break;
 			case 'e':
 				menuId = 0;
