@@ -46,18 +46,6 @@ void loadBucketData() {
             bucket.createdBy = atoi(token);
         }
 
-        //// Initialize taskIds array and counter
-        //bucket.taskCount = 0;
-
-        //// Load task IDs
-        //while ((token = strtok(NULL, ",")) != NULL) {
-        //    int taskId = atoi(token);
-        //    if (bucket.taskCount < MAX_TASKS_PER_BUCKET) {
-        //        bucket.taskIds[bucket.taskCount] = taskId;
-        //        bucket.taskCount++;
-        //    }
-        //}
-
         if (bucketCount == 0) {
             bucketArray = (Bucket*)malloc(sizeof(Bucket));
         }
@@ -81,9 +69,9 @@ void displayAllBuckets() {
     }
 
     printf("--- Bucket List ---\n");
-    printf("+--------+----------------------+--------------------------+----------------------+\n");
-    printf("|   ID   |        Title         |       Created Date       |       Created By     |\n");
-    printf("+--------+----------------------+--------------------------+----------------------+\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
+    printf("|   ID   |        Title         |       Created Date       |     Created By   |\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
 
     for (int i = 0; i < bucketCount; i++) {
         printf("| %6d | %20s | ", bucketArray[i].id, bucketArray[i].title);
@@ -99,11 +87,11 @@ void displayAllBuckets() {
 
         User* user = getUserById(bucketArray[i].createdBy);
         if (user != NULL){
-            printf("| %8s (%8s) |\n", user->Name[0], user->role ? "Employee" : "Admin");
+            printf("| %8s (%5s) |\n", user->Name[0], user->role == ROLE_ADMIN ? "Admin" : "Employee");
         }
     }
 
-    printf("+--------+----------------------+--------------------------+----------------------+\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
 }
 
 void navigateToBucket()
@@ -148,14 +136,21 @@ void editBucketTitle() {
 }
 
 void createBucket() {
-    srand(time(NULL)); // Seed the random number generator
     char title[256];
 
     printf("Enter the title for the new bucket: ");
     scanf(" %[^\n]s", title); // Read line with spaces
 
-    // Generate a random ID (you can adjust the range as needed)
-    int newId = rand() % 10000 + 10000; // Generates a random number between 1 and 1000
+    for (int i = 0; i < bucketCount; i++) {
+        if (strcmp(bucketArray[i].title, title) == 0) {
+            // If ID exists, try generating a new one
+            printf("Bucket title '%s' already exists!\n", title);
+            return;
+        }
+    }
+
+    srand(time(NULL)); // Seed the random number generator
+    int newId = rand() % 10000 + 10000; // Generates a random number between 10000 and 19999
 
     // Check if the generated ID already exists
     for (int i = 0; i < bucketCount; i++) {
@@ -217,14 +212,12 @@ void deleteBucket() {
     bucketArray = (Bucket*)realloc(bucketArray, sizeof(Bucket) * bucketCount);
 
     printf("Bucket with ID %d deleted.\n", bucketId);
-    // Save the changes to the file
-    saveBucketToFile();
+    saveBucketToFile();  // Save the changes to the file
 }
 
 void closeBucketModule() {
     saveBucketToFile(); //save data before closing
     free(bucketArray);
-    bucketArray = NULL;
 }
 
 void saveBucketToFile() {
@@ -237,12 +230,11 @@ void saveBucketToFile() {
     }
 
     for (int i = 0; i < bucketCount; i++) {
-        fprintf(dataFile, "%d,%s,%ld,%d", bucketArray[i].id, bucketArray[i].title, bucketArray[i].createdDate, bucketArray[i].createdBy);
-        /*for (int j = 0; j < bucketArray[i].taskCount; j++) {
-            if (bucketArray[i].taskIds[j] != -1) {
-                fprintf(dataFile, ",%d", bucketArray[i].taskIds[j]);
-            }
-        }*/
+        fprintf(dataFile, "%d,%s,%ld,%d",
+            bucketArray[i].id,
+            bucketArray[i].title,
+            bucketArray[i].createdDate,
+            bucketArray[i].createdBy);
         fprintf(dataFile, "\n");
     }
 
