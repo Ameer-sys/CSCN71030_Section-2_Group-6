@@ -10,49 +10,91 @@ User* userList = NULL;
 int userCount = 0;
 int loggedUser = -1;
 int isAdmin = 0;
+
+int isAlphaOnly(const char* str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (!isalpha((unsigned char)str[i])) {  
+            return 0;  
+        }
+    }
+    return 1;  
+}
 User* registerUser() {
     srand(time(NULL));
-    userCount += 1;  //increases the userCount of the userList for each person the registers
+    char tempInput[MAX_LENGTH];  
 
-    //uses realloc to rezie the userList
-    userList = realloc(userList, userCount * sizeof(User));
+    while (1) {  
+        userCount += 1;
+        userList = realloc(userList, userCount * sizeof(User));
+        if (userList == NULL) {
+            printf("Memory allocation failed.\n");
+            exit(1);
+        }
 
-    if (userList == NULL) {
-        printf("Memory allocation failed.\n");
-        exit(1);
+        userList[userCount - 1].userID = rand() % 100;
+        printf("Your UserID is: %d\n", userList[userCount - 1].userID);
+
+        
+        printf("Enter last name (letters only): ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("Last name cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        if (!isAlphaOnly(tempInput)) {
+            printf("Last name must contain only letters! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].Name[0], MAX_LENGTH, tempInput);
+
+        
+        printf("Enter first name (letters only): ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("First name cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        if (!isAlphaOnly(tempInput)) {
+            printf("First name must contain only letters! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].Name[1], MAX_LENGTH, tempInput);
+
+        
+        printf("Enter email: ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("Email cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].email, MAX_LENGTH, tempInput);
+
+        
+        printf("Enter password: ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("Password cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].password, MAX_LENGTH, tempInput);
+
+        
+        if (userCount == 1) {
+            userList[userCount - 1].role = ROLE_ADMIN;
+            printf("You are registered as the Administrator.\n");
+        }
+        else {
+            userList[userCount - 1].role = ROLE_EMPLOYEE;
+            printf("You are registered as an Employee.\n");
+        }
+
+        saveUserList(userList, userCount);
+        printf("User registered successfully!\n");
+        return userList;  
     }
-
-    //generates userIDs randomly
-    userList[userCount - 1].userID = rand() % 100;
-    printf("Your UserID is: %d\n", userList[userCount - 1].userID);
-
-    printf("Enter last name: ");
-    scanf_s("%s", userList[userCount - 1].Name[0], MAX_LENGTH);
-
-    printf("Enter first name: ");
-    scanf_s("%s", userList[userCount - 1].Name[1], MAX_LENGTH);
-
-    printf("Enter email: ");
-    scanf_s("%s", userList[userCount - 1].email, MAX_LENGTH);
-
-    printf("Enter password: ");
-    scanf_s("%s", userList[userCount - 1].password, MAX_LENGTH);
-
-    //sets roles
-    if (userCount == 1) {
-        userList[userCount - 1].role = ROLE_ADMIN;  //first user becomes admin
-        printf("You are registered as the Administrator.\n");
-    }
-    else {
-        userList[userCount - 1].role = ROLE_EMPLOYEE;  //everyone else are employees
-        printf("You are registered as an Employee.\n");
-    }
-
-    saveUserList(userList, userCount);
-    printf("User registered successfully!\n");
-    return userList;
 }
-
 void deleteUser() {
     if (loggedUser == -1) {//this checks if the user is logged in
         printf("You must be logged in to delete profile\n");
@@ -249,51 +291,85 @@ void loginUser() {
 
 int createUser() {
     srand(time(NULL));
-    userCount += 1;  
+    char tempInput[MAX_LENGTH];  
 
-    // uses realloc to resize the userList
-    userList = realloc(userList, userCount * sizeof(User));
+    while (1) {  
+        userCount += 1;
+        userList = realloc(userList, userCount * sizeof(User));
+        if (userList == NULL) {
+            printf("Memory allocation failed.\n");
+            exit(1);
+        }
 
-    if (userList == NULL) {
-        printf("Memory allocation failed.\n");
-        exit(1);
-    }
+        userList[userCount - 1].userID = rand() % 100;
+        printf("New UserID is: %d\n", userList[userCount - 1].userID);
 
-    // generates userIDs randomly
-    userList[userCount - 1].userID = rand() % 100;
-    printf("New UserID is: %d\n", userList[userCount - 1].userID);
-
-    printf("Enter last name: ");
-    scanf_s("%s", userList[userCount - 1].Name[0], MAX_LENGTH);
-
-    printf("Enter first name: ");
-    scanf_s("%s", userList[userCount - 1].Name[1], MAX_LENGTH);
-
-    printf("Enter email: ");
-    scanf_s("%s", userList[userCount - 1].email, MAX_LENGTH);
-
-    printf("Enter password: ");
-    scanf_s("%s", userList[userCount - 1].password, MAX_LENGTH);
-
-    
-    int roleChoice;
-    printf("Enter role (0 for Employee, 1 for Admin): ");
-    scanf_s("%d", &roleChoice);
-
-    if (roleChoice == ROLE_ADMIN || roleChoice == ROLE_EMPLOYEE) {
-        userList[userCount - 1].role = roleChoice;
-    }
-    else {
        
-        userList[userCount - 1].role = ROLE_EMPLOYEE;
-        printf("Invalid role input. Setting as Employee by default.\n");
+        printf("Enter last name (letters only): ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("Last name cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        if (!isAlphaOnly(tempInput)) {
+            printf("Last name must contain only letters! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].Name[0], MAX_LENGTH, tempInput);
+
+        
+        printf("Enter first name (letters only): ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("First name cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        if (!isAlphaOnly(tempInput)) {
+            printf("First name must contain only letters! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].Name[1], MAX_LENGTH, tempInput);
+
+       
+        printf("Enter email: ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("Email cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].email, MAX_LENGTH, tempInput);
+
+        
+        printf("Enter password: ");
+        if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
+            printf("Password cannot be empty! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        strcpy_s(userList[userCount - 1].password, MAX_LENGTH, tempInput);
+
+        
+        int roleChoice;
+        printf("Enter role (0 for Employee, 1 for Admin): ");
+        if (scanf_s("%d", &roleChoice) != 1) {
+            printf("Invalid role input! Please try again.\n");
+            userCount -= 1;
+            continue;
+        }
+        if (roleChoice == ROLE_ADMIN || roleChoice == ROLE_EMPLOYEE) {
+            userList[userCount - 1].role = roleChoice;
+        }
+        else {
+            userList[userCount - 1].role = ROLE_EMPLOYEE;
+            printf("Invalid role input. Setting as Employee by default.\n");
+        }
+
+        saveUserList(userList, userCount);
+        printf("User created successfully!\n");
+        return 1;  
     }
-
-   
-    saveUserList(userList, userCount);
-    printf("User created successfully!\n");
-
-    return 1;
 }
 void closeUserModule()
 {

@@ -6,8 +6,8 @@
 #define MAX_LENGTH 100 //defines the name length
 
 //defines roles
-#define ROLE_EMPLOYEE 0
-#define ROLE_ADMIN 1
+#define ROLE_EMPLOYEE 1
+#define ROLE_ADMIN 0
 
 //user moduel
 typedef struct {
