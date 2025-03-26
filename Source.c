@@ -5,9 +5,9 @@
 #include <time.h>
 #include "Bucket.h"
 #include "User.h"
+#include "Task.h"
 
 int main(void) {
-	loadBucketData();
 	initializeUserList();
 
 	printf("Welcome to To Do List Application\n");
@@ -40,103 +40,151 @@ int main(void) {
 		}
 	}
 
+	loadBucketData();
 
+	int menuId = 0;
 	while (1) {
 		if (loggedUser == -1) break;
-		printf("\n");
-		printf("To choose a function, enter its letter label:\n");
-		printf("+ Bucket Management\n");
-		printf("a) Display all buckets\n");
-		printf("b) Navigate to a bucket\n");
-		printf("c) Edit bucket title\n");
-		printf("d) Create new bucket\n");
-		printf("e) Delete a bucket\n");
-		printf("\n");
+		if (menuId == 0) {
+			printf("\n");
+			printf("To choose a function, enter its letter label:\n");
+			printf("+ Bucket Management\n");
+			printf("a) Display all buckets\n");
+			printf("b) Navigate to a bucket\n");
+			printf("c) Edit bucket title\n");
+			printf("d) Create new bucket\n");
+			printf("e) Delete a bucket\n");
+			printf("v) View Task details\n");
+			printf("\n");
 
-		if (isAdmin) {
-			printf("+ Administration\n");
-			printf("i) Create new user\n");
-			printf("j) Edit a user\n");
-			printf("k) Delete a user\n");
-			printf("l) Search tasks assigned to a user\n");
-			printf("m) Exit\n");
+			if (isAdmin) {
+				printf("+ Administration\n");
+				printf("i) Display all users\n");
+				printf("j) Create new user\n");
+				printf("k) Edit a user\n");
+				printf("l) Delete a user\n");
+				printf("m) Search tasks assigned to a user\n");
+			}
+			else {
+				printf("+ User Management\n");
+				printf("f) View my profile\n");
+				printf("g) Update my profile\n");
+				printf("h) Delete My Account\n");
+			}
+			printf("x) Exit\n");
+
+			char option[2];
+			printf("Enter your option from a-i: ");
+			scanf("%s.1", option);
+
+			switch (option[0]) {
+			case 'a':
+				displayAllBuckets();
+				break;
+			case 'b':
+				navigateToBucket();
+				menuId = 1;
+				break;
+			case 'c':
+				editBucketTitle();
+				break;
+			case 'd':
+				createBucket();
+				break;
+			case 'e':
+				deleteBucket();
+				break;
+			case 'v':
+				viewTask();
+				break;
+			case 'f':
+				if (!isAdmin) {
+					viewUser();
+				}
+				break;
+			case 'g':
+				if (!isAdmin) {
+					updateUser();
+					saveUserList();
+				}
+				break;
+			case 'h':
+				if (!isAdmin) {
+					deleteUser();
+					saveUserList();
+					loggedUser = -1;
+				}
+				break;
+			case 'i':
+				if (isAdmin) {
+					displayAllUsers();
+				}
+				break;
+			case 'j':
+				if (isAdmin) {
+					createUser();
+					saveUserList();
+				}
+				break;
+			case 'k':
+				if (isAdmin) {
+					updateUser();
+					saveUserList();
+				}
+				break;
+			case 'l':
+				if (isAdmin) {
+					deleteUser();
+					saveUserList();
+				}
+				break;
+			case 'm':
+				break;
+			case 'x':
+				closeBucketModule();
+				closeUserModule();
+				exit(0);
+				break;
+			default:
+				printf("You've entered invalid option. Please try again!\n");
+				break;
+			}
 		}
 		else {
-			printf("+ User Management\n");
-			printf("f) View my profile\n");
-			printf("g) Update my profile\n");
-			printf("h) Delete My Account\n");
-			printf("i) Exit\n");
-		}
-		
+			printf("\n");
+			printf("=== %s ===\n", currentBucket->title);
+			printf("Choose a function to manipulate tasks:\n");
+			printf("a) Display all tasks\n");
+			printf("b) Create a new task\n");
+			printf("c) Edit a task\n");
+			printf("d) Delete a task\n");
+			printf("e) Back to main menu\n");
+			printf("\n");
 
-		char option[2];
-		printf("Enter your option from a-i: ");
-		scanf("%s.1", option);
+			char option[2];
+			printf("Enter your option from a-e: ");
+			scanf("%s.1", option);
 
-		switch (option[0]) {
-		case 'a':
-			displayAllBuckets();
-			break;
-		case 'b':
-			break;
-		case 'c':
-			editBucketTitle();
-			break;
-		case 'd':
-			createBucket();
-			break;
-		case 'e':
-			deleteBucket();
-			break;
-
-		case 'f':
-			if (!isAdmin) {
-				viewUser();
+			switch (option[0]) {
+			case 'a':
+				displayTasks();
+				break;
+			case 'b':
+				addTask();
+				break;
+			case 'c':
+				editTask();
+				break;
+			case 'd':
+				deleteTask();
+				break;
+			case 'e':
+				menuId = 0;
+				break;
+			default:
+				printf("You've entered invalid option. Please try again!\n");
+				break;
 			}
-			break;
-		case 'g':
-			if (!isAdmin) {
-				updateUser();
-				saveUserList();
-			}
-			break;
-		case 'h':
-			if (!isAdmin) {
-				deleteUser();
-				saveUserList();
-				loggedUser = -1;
-			}
-			break;
-		case 'i':
-			if (isAdmin) {
-				createUser();
-				saveUserList();
-			}
-			break;
-		case 'j':
-			if (isAdmin) {
-				updateUser();
-				saveUserList();
-			}
-			break;
-		case 'k':
-			if (isAdmin) {
-				deleteUser();
-				saveUserList();
-			}
-
-			break;
-		case 'l':
-			break;
-		case 'm':
-			closeBucketModule();
-			closeUserModule();
-			exit(0);
-			break;
-		default:
-			printf("You've entered invalid option. Please try again!\n");
-			break;
 		}
 	}
 }

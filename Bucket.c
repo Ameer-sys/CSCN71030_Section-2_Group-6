@@ -2,6 +2,7 @@
 
 #include "Bucket.h"
 #include "User.h"
+#include "Task.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,7 @@
 
 Bucket* bucketArray = NULL;
 int bucketCount = 0; // Keep track of the number of buckets
+Bucket* currentBucket = NULL;
 
 void loadBucketData() {
     FILE* dataFile;
@@ -40,18 +42,8 @@ void loadBucketData() {
         }
 
         token = strtok(NULL, ",");
-        bucket.createdBy = atoi(token);
-
-        // Initialize taskIds array and counter
-        bucket.taskCount = 0;
-
-        // Load task IDs
-        while ((token = strtok(NULL, ",")) != NULL) {
-            int taskId = atoi(token);
-            if (bucket.taskCount < MAX_TASKS_PER_BUCKET) {
-                bucket.taskIds[bucket.taskCount] = taskId;
-                bucket.taskCount++;
-            }
+        if (token != NULL) {
+            bucket.createdBy = atoi(token);
         }
 
         if (bucketCount == 0) {
@@ -77,9 +69,9 @@ void displayAllBuckets() {
     }
 
     printf("--- Bucket List ---\n");
-    printf("+--------+----------------------+--------------------------+--------------+\n");
-    printf("|   ID   |        Title         |       Created Date       | Created By   |\n");
-    printf("+--------+----------------------+--------------------------+--------------+\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
+    printf("|   ID   |        Title         |       Created Date       |     Created By   |\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
 
     for (int i = 0; i < bucketCount; i++) {
         printf("| %6d | %20s | ", bucketArray[i].id, bucketArray[i].title);
@@ -91,10 +83,29 @@ void displayAllBuckets() {
         // Format the date and time
         char formattedTime[20];
         strftime(formattedTime, sizeof(formattedTime), "%m/%d/%Y %H:%M:%S", timeinfo);
-        printf("%24s | %12s |\n", formattedTime, "Bob");
+        printf("%24s ", formattedTime);
+
+        User* user = getUserById(bucketArray[i].createdBy);
+        if (user != NULL){
+            printf("| %8s (%5s) |\n", user->Name[0], user->role == ROLE_ADMIN ? "Admin" : "Employee");
+        }
     }
 
-    printf("+--------+----------------------+--------------------------+--------------+\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
+}
+
+void navigateToBucket()
+{
+    int bucketId;
+    printf("Enter ID of bucket you'd like to navigate to: ");
+    scanf("%d", &bucketId);
+
+    for (int i = 0; i < bucketCount; i++) {
+        if (bucketArray[i].id == bucketId) {
+            currentBucket = &bucketArray[i];
+            break;
+        }
+    }
 }
 
 void editBucketTitle() {
@@ -125,14 +136,21 @@ void editBucketTitle() {
 }
 
 void createBucket() {
-    srand(time(NULL)); // Seed the random number generator
     char title[256];
 
     printf("Enter the title for the new bucket: ");
     scanf(" %[^\n]s", title); // Read line with spaces
 
-    // Generate a random ID (you can adjust the range as needed)
-    int newId = rand() % 10000 + 10000; // Generates a random number between 1 and 1000
+    for (int i = 0; i < bucketCount; i++) {
+        if (strcmp(bucketArray[i].title, title) == 0) {
+            // If ID exists, try generating a new one
+            printf("Bucket title '%s' already exists!\n", title);
+            return;
+        }
+    }
+
+    srand(time(NULL)); // Seed the random number generator
+    int newId = rand() % 10000 + 10000; // Generates a random number between 10000 and 19999
 
     // Check if the generated ID already exists
     for (int i = 0; i < bucketCount; i++) {
@@ -147,11 +165,7 @@ void createBucket() {
     newBucket.id = newId;
     strcpy(newBucket.title, title);
     newBucket.createdDate = time(NULL); // Get current time as time_t
-
-    // Set createdBy to a default user ID (e.g., 0 or 1) or a constant
-    // You might want to define a constant like DEFAULT_USER_ID
-    newBucket.createdBy = 0; // Or DEFAULT_USER_ID;
-    newBucket.taskCount = 0;
+    newBucket.createdBy = loggedUser;
 
     if (bucketCount == 0) {
         bucketArray = (Bucket*)malloc(sizeof(Bucket));
@@ -187,6 +201,8 @@ void deleteBucket() {
         return;
     }
 
+    deleteAllTasksInBucket();
+
     // Shift remaining elements to overwrite the deleted one
     for (int i = bucketIndex; i < bucketCount - 1; i++) {
         bucketArray[i] = bucketArray[i + 1];
@@ -196,14 +212,12 @@ void deleteBucket() {
     bucketArray = (Bucket*)realloc(bucketArray, sizeof(Bucket) * bucketCount);
 
     printf("Bucket with ID %d deleted.\n", bucketId);
-    // Save the changes to the file
-    saveBucketToFile();
+    saveBucketToFile();  // Save the changes to the file
 }
 
 void closeBucketModule() {
     saveBucketToFile(); //save data before closing
     free(bucketArray);
-    bucketArray = NULL;
 }
 
 void saveBucketToFile() {
@@ -216,12 +230,11 @@ void saveBucketToFile() {
     }
 
     for (int i = 0; i < bucketCount; i++) {
-        fprintf(dataFile, "%d,%s,%ld,%d", bucketArray[i].id, bucketArray[i].title, bucketArray[i].createdDate, bucketArray[i].createdBy);
-        for (int j = 0; j < bucketArray[i].taskCount; j++) {
-            if (bucketArray[i].taskIds[j] != -1) {
-                fprintf(dataFile, ",%d", bucketArray[i].taskIds[j]);
-            }
-        }
+        fprintf(dataFile, "%d,%s,%ld,%d",
+            bucketArray[i].id,
+            bucketArray[i].title,
+            bucketArray[i].createdDate,
+            bucketArray[i].createdBy);
         fprintf(dataFile, "\n");
     }
 

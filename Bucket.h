@@ -10,16 +10,18 @@ typedef struct bucket {
 	char title[256];
 	time_t createdDate;
 	int createdBy;
-	int taskIds[MAX_TASKS_PER_BUCKET];
-	int taskCount;
+	/*int taskIds[MAX_TASKS_PER_BUCKET];
+	int taskCount;*/
 } Bucket;
 
 Bucket* bucketArray;
 int bucketCount;
+Bucket* currentBucket;
 
 // Funtions in Bucket Module
 void loadBucketData();
 void displayAllBuckets();
+void navigateToBucket();
 void editBucketTitle();
 void createBucket();
 void deleteBucket();

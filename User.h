@@ -25,7 +25,9 @@ int isAdmin;
 User loggedInUser;
 
 //functions
+User* getUserById(int userId);
 User* registerUser();  //register user
+void displayAllUsers();
 void deleteUser();  //delete user
 void updateUser();   //update user
 void saveUserList();        //save data
