@@ -69,9 +69,9 @@ void displayAllBuckets() {
     }
 
     printf("--- Bucket List ---\n");
-    printf("+--------+----------------------+--------------------------+-------------------+\n");
-    printf("|   ID   |        Title         |       Created Date       |     Created By    |\n");
-    printf("+--------+----------------------+--------------------------+-------------------+\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
+    printf("|   ID   |        Title         |       Created Date       |     Created By   |\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
 
     for (int i = 0; i < bucketCount; i++) {
         printf("| %6d | %20s | ", bucketArray[i].id, bucketArray[i].title);
@@ -87,11 +87,11 @@ void displayAllBuckets() {
 
         User* user = getUserById(bucketArray[i].createdBy);
         if (user != NULL){
-            printf("| %8s (%5s) |\n", user->Name[0], user->role == ROLE_ADMIN ? "Admin" : "Employ");
+            printf("| %8s (%5s) |\n", user->Name[0], user->role == ROLE_ADMIN ? "Admin" : "Emplo");
         }
     }
 
-    printf("+--------+----------------------+--------------------------+-------------------+\n");
+    printf("+--------+----------------------+--------------------------+------------------+\n");
 }
 
 int navigateToBucket()
@@ -108,6 +108,13 @@ int navigateToBucket()
     }
 
     printf("Bucket with ID %d not found!\n", bucketId);
+    return 0;
+}
+
+int isTitleDuplicated(char title[]) {
+    for (int i = 0; i < bucketCount; i++) {
+        if (strcmp(bucketArray[i].title, title) == 0) return 1;
+    }
     return 0;
 }
 
@@ -131,7 +138,12 @@ void editBucketTitle() {
 
     char newTitle[256];
     printf("Enter the new title for the bucket: ");
-    scanf(" %[^\n]s", newTitle); // Read line with spaces
+    scanf(" %[^\n]s", newTitle);
+
+    if (isTitleDuplicated(newTitle)) {
+        printf("Bucket with title '%s' already exists! Please try again later.\n", newTitle);
+        return;
+    }
 
     strcpy(bucketArray[bucketIndex].title, newTitle);
     printf("Bucket title updated successfully.\n");
@@ -142,7 +154,12 @@ void createBucket() {
     char title[256];
 
     printf("Enter the title for the new bucket: ");
-    scanf(" %[^\n]s", title); // Read line with spaces
+    scanf(" %[^\n]s", title);
+
+    if (isTitleDuplicated(title)) {
+        printf("Bucket with title '%s' already exists! Please try again later.\n", title);
+        return;
+    }
 
     for (int i = 0; i < bucketCount; i++) {
         if (strcmp(bucketArray[i].title, title) == 0) {

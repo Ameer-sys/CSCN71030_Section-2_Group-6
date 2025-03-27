@@ -20,6 +20,7 @@ Bucket* currentBucket;
 void loadBucketData();
 void displayAllBuckets();
 int navigateToBucket();
+int isTitleDuplicated(char title[]);
 void editBucketTitle();
 void createBucket();
 void deleteBucket();
