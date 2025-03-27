@@ -34,9 +34,9 @@ int isAlphaOnly(const char* str) {
 }
 User* registerUser() {
     srand(time(NULL));
-    char tempInput[MAX_LENGTH];  
+    char tempInput[MAX_LENGTH];
 
-    while (1) {  
+    while (1) {
         userCount += 1;
         userList = realloc(userList, userCount * sizeof(User));
         if (userList == NULL) {
@@ -47,7 +47,7 @@ User* registerUser() {
         userList[userCount - 1].userID = rand() % 100;
         printf("Your UserID is: %d\n", userList[userCount - 1].userID);
 
-        
+
         printf("Enter last name (letters only): ");
         if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
             printf("Last name cannot be empty! Please try again.\n");
@@ -61,7 +61,7 @@ User* registerUser() {
         }
         strcpy_s(userList[userCount - 1].Name[0], MAX_LENGTH, tempInput);
 
-        
+
         printf("Enter first name (letters only): ");
         if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
             printf("First name cannot be empty! Please try again.\n");
@@ -75,7 +75,7 @@ User* registerUser() {
         }
         strcpy_s(userList[userCount - 1].Name[1], MAX_LENGTH, tempInput);
 
-        
+
         printf("Enter email: ");
         if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
             printf("Email cannot be empty! Please try again.\n");
@@ -84,7 +84,7 @@ User* registerUser() {
         }
         strcpy_s(userList[userCount - 1].email, MAX_LENGTH, tempInput);
 
-        
+
         printf("Enter password: ");
         if (scanf_s("%s", tempInput, MAX_LENGTH) != 1 || strlen(tempInput) == 0) {
             printf("Password cannot be empty! Please try again.\n");
@@ -93,7 +93,7 @@ User* registerUser() {
         }
         strcpy_s(userList[userCount - 1].password, MAX_LENGTH, tempInput);
 
-        
+
         if (userCount == 1) {
             userList[userCount - 1].role = ROLE_ADMIN;
             printf("You are registered as the Administrator.\n");
@@ -103,125 +103,127 @@ User* registerUser() {
             printf("You are registered as an Employee.\n");
         }
 
-    saveUserList(userList, userCount);
-    printf("User registered successfully!\n");
-    return userList;
+        saveUserList(userList, userCount);
+        printf("User registered successfully!\n");
+        return userList;
+    }
 }
+    void displayAllUsers()
+    {
+        printf("--- User List ---\n");
+        printf("+--------+----------------------+--------------------------+--------------+\n");
+        printf("|   ID   |         Name         |           Email          |      Role    |\n");
+        printf("+--------+----------------------+--------------------------+--------------+\n");
 
-void displayAllUsers()
-{
-    printf("--- User List ---\n");
-    printf("+--------+----------------------+--------------------------+--------------+\n");
-    printf("|   ID   |         Name         |           Email          |      Role    |\n");
-    printf("+--------+----------------------+--------------------------+--------------+\n");
-
-    for (int i = 0; i < userCount; i++) {
-        char roleStr[16];
-        if (userList[i].role == ROLE_ADMIN) {
-            strcpy(roleStr, "Admin");
+        for (int i = 0; i < userCount; i++) {
+            char roleStr[16];
+            if (userList[i].role == ROLE_ADMIN) {
+                strcpy(roleStr, "Admin");
+            }
+            else {
+                strcpy(roleStr, "Employee");
+            }
+            printf("| %6d | %10s %9s | %24s | %12s |\n", userList[i].userID, userList[i].Name[0], userList[i].Name[1], userList[i].email, roleStr);
         }
-        else {
-            strcpy(roleStr, "Employee");
+
+        printf("+--------+----------------------+--------------------------+--------------+\n");
+    }
+
+    void deleteUser() {
+        if (loggedUser == -1) {//this checks if the user is logged in
+            printf("You must be logged in to delete profile\n");
+            return;
         }
-        printf("| %6d | %10s %9s | %24s | %12s |\n", userList[i].userID, userList[i].Name[0], userList[i].Name[1], userList[i].email, roleStr);
-    }
 
-    printf("+--------+----------------------+--------------------------+--------------+\n");
-}
+        int userIndex = -1;//holds the position of the loged in user, right now its set to -1 as here is no logged in user
+        int isAdmin = 0;//defines isadmin as zero meaning there an admin
 
-void deleteUser() {
-    if (loggedUser == -1) {//this checks if the user is logged in
-        printf("You must be logged in to delete profile\n");
-        return;
-    }
-
-    int userIndex = -1;//holds the position of the loged in user, right now its set to -1 as here is no logged in user
-    int isAdmin = 0;//defines isadmin as zero meaning there an admin
-
-    //checkes if the logged in user is an admin
-    for (int i = 0; i < userCount; i++) {//goes through the whole userList
-        if (userList[i].userID == loggedUser) {//if the userid in the userList matches with the loggedUser it continues
-            userIndex = i;//userindex is now at i where the loged user is
-            isAdmin = (userList[i].role == ROLE_ADMIN);//checks if its an admin
-            break;
+        //checkes if the logged in user is an admin
+        for (int i = 0; i < userCount; i++) {//goes through the whole userList
+            if (userList[i].userID == loggedUser) {//if the userid in the userList matches with the loggedUser it continues
+                userIndex = i;//userindex is now at i where the loged user is
+                isAdmin = (userList[i].role == ROLE_ADMIN);//checks if its an admin
+                break;
+            }
         }
-    }
 
-    if (userIndex == -1) {//if userindex isnt chagned means there is no user there
-        printf("User not found!\n");
-        return;
-    }
+        if (userIndex == -1) {//if userindex isnt chagned means there is no user there
+            printf("User not found!\n");
+            return;
+        }
 
-    int targetUserID;//this signifies what user the admin wants to delete
+        int targetUserID;//this signifies what user the admin wants to delete
 
-    //admin can delete any account
-    if (isAdmin) {//makes sure admin is here
-        printf("Enter user ID to delete (enter your own ID to delete your account): ");
-        scanf_s("%d", &targetUserID);
+        //admin can delete any account
+        if (isAdmin) {//makes sure admin is here
+            printf("Enter user ID to delete (enter your own ID to delete your account): ");
+            scanf_s("%d", &targetUserID);
 
-        //fins user
-        for (int i = 0; i < userCount; i++) {//goes through the userList
-            if (userList[i].userID == targetUserID) {//unitl it finds and id that matches with the one choosen
-                //admin account cannot be deleted
-                if (userList[i].role == ROLE_ADMIN) {//checks of the picked user is an admin
-                    int adminCount = 0;
-                    for (int j = 0; j < userCount; j++) {
-                        if (userList[j].role == ROLE_ADMIN) {
-                            adminCount++;
+            //fins user
+            for (int i = 0; i < userCount; i++) {//goes through the userList
+                if (userList[i].userID == targetUserID) {//unitl it finds and id that matches with the one choosen
+                    //admin account cannot be deleted
+                    if (userList[i].role == ROLE_ADMIN) {//checks of the picked user is an admin
+                        int adminCount = 0;
+                        for (int j = 0; j < userCount; j++) {
+                            if (userList[j].role == ROLE_ADMIN) {
+                                adminCount++;
+                            }
+                        }
+
+                        if (adminCount <= 1) {
+                            printf("Cannot delete the only admin account!\n");
+                            return;
                         }
                     }
 
-                    if (adminCount <= 1) {
-                        printf("Cannot delete the only admin account!\n");
+
+                    for (int j = i; j < userCount - 1; j++) {
+                        userList[j] = userList[j + 1];
+                    }
+
+                    userCount -= 1;  // Decrease userCount
+                    userList = realloc(userList, userCount * sizeof(User));  //reuserCount array after deletion
+
+                    if (userList == NULL && userCount > 0) {
+                        printf("Memory reallocation failed.\n");
+                        exit(1);
+                    }
+
+                    printf("User deleted successfully!\n");
+                    saveUserList(userList, userCount);  //save new userList
+
+                    //if user deletes themselves they go to logout
+                    if (targetUserID == loggedUser) {
                         return;
                     }
-                }
-
-
-                for (int j = i; j < userCount - 1; j++) {
-                    userList[j] = userList[j + 1];
-                }
-
-                userCount -= 1;  // Decrease userCount
-                userList = realloc(userList, userCount * sizeof(User));  //reuserCount array after deletion
-
-                if (userList == NULL && userCount > 0) {
-                    printf("Memory reallocation failed.\n");
-                    exit(1);
-                }
-
-                printf("User deleted successfully!\n");
-                saveUserList(userList, userCount);  //save new userList
-
-                //if user deletes themselves they go to logout
-                if (targetUserID == loggedUser) {
                     return;
                 }
-                return;
             }
+            printf("Target user not found!\n");
+            return;
         }
-        printf("Target user not found!\n");
-        return;
+        else {
+            //user can only delete themselves
+            for (int j = userIndex; j < userCount - 1; j++) {
+                userList[j] = userList[j + 1];
+            }
+
+            userCount -= 1;
+            userList = realloc(userList, userCount * sizeof(User));
+
+            if (userList == NULL && userCount > 0) {
+                printf("Memory reallocation failed.\n");
+                exit(1);
+            }
+
+            printf("User deleted successfully!\n");
+            saveUserList(userList, userCount);
+            return;
+        }
     }
-    else {
-        //user can only delete themselves
-        for (int j = userIndex; j < userCount - 1; j++) {
-            userList[j] = userList[j + 1];
-        }
+    
 
-        userCount -= 1;
-        userList = realloc(userList, userCount * sizeof(User));
-
-        if (userList == NULL && userCount > 0) {
-            printf("Memory reallocation failed.\n");
-            exit(1);
-        }
-
-        printf("User deleted successfully!\n");
-        saveUserList(userList, userCount);
-        return;
-    }
-}
 
 void updateUser() {
     if (loggedUser == -1) {
