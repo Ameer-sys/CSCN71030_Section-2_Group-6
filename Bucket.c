@@ -69,9 +69,9 @@ void displayAllBuckets() {
     }
 
     printf("--- Bucket List ---\n");
-    printf("+--------+----------------------+--------------------------+------------------+\n");
-    printf("|   ID   |        Title         |       Created Date       |     Created By   |\n");
-    printf("+--------+----------------------+--------------------------+------------------+\n");
+    printf("+--------+----------------------+--------------------------+-------------------+\n");
+    printf("|   ID   |        Title         |       Created Date       |     Created By    |\n");
+    printf("+--------+----------------------+--------------------------+-------------------+\n");
 
     for (int i = 0; i < bucketCount; i++) {
         printf("| %6d | %20s | ", bucketArray[i].id, bucketArray[i].title);
@@ -87,14 +87,14 @@ void displayAllBuckets() {
 
         User* user = getUserById(bucketArray[i].createdBy);
         if (user != NULL){
-            printf("| %8s (%5s) |\n", user->Name[0], user->role == ROLE_ADMIN ? "Admin" : "Employee");
+            printf("| %8s (%5s) |\n", user->Name[0], user->role == ROLE_ADMIN ? "Admin" : "Employ");
         }
     }
 
-    printf("+--------+----------------------+--------------------------+------------------+\n");
+    printf("+--------+----------------------+--------------------------+-------------------+\n");
 }
 
-void navigateToBucket()
+int navigateToBucket()
 {
     int bucketId;
     printf("Enter ID of bucket you'd like to navigate to: ");
@@ -103,9 +103,12 @@ void navigateToBucket()
     for (int i = 0; i < bucketCount; i++) {
         if (bucketArray[i].id == bucketId) {
             currentBucket = &bucketArray[i];
-            break;
+            return 1;
         }
     }
+
+    printf("Bucket with ID %d not found!\n", bucketId);
+    return 0;
 }
 
 void editBucketTitle() {

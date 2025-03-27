@@ -82,8 +82,7 @@ int main(void) {
 				displayAllBuckets();
 				break;
 			case 'b':
-				navigateToBucket();
-				menuId = 1;
+				menuId = navigateToBucket();
 				break;
 			case 'c':
 				editBucketTitle();
