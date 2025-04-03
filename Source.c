@@ -157,7 +157,8 @@ int main(void) {
 			printf("b) Create a new task\n");
 			printf("c) Edit a task\n");
 			printf("d) Delete a task\n");
-			printf("e) Back to main menu\n");
+			printf("e) View One Task\n");
+			printf("f) Back to main menu\n");
 			printf("\n");
 
 			char option[2];
@@ -178,6 +179,9 @@ int main(void) {
 				deleteTask();
 				break;
 			case 'e':
+				viewTask();
+				break;
+			case 'f':
 				menuId = 0;
 				break;
 			default:
