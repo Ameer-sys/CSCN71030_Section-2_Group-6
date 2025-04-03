@@ -1,15 +1,40 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <iostream>
+#define MAX_LENGTH 100 //defines the name length
 
-// Define User Module
-typedef struct user {
-	char fullName[2][256];
-	char alias[64];
+//defines roles
+#define ROLE_EMPLOYEE 1
+#define ROLE_ADMIN 0
+
+//user moduel
+typedef struct {
+	int userID;
+	char Name[2][MAX_LENGTH];  //2d array for first and last name
+	char email[MAX_LENGTH];
+	char password[MAX_LENGTH];
 	int role;
 } User;
 
-// Functions operating in User Module
-User createNewUser(char lastName[], char firstName[], int role, char alias[] = NULL);	// Function that adds new user in database
-User deleteUser(int userId);	// Function to delete an existed user, return the result of that deleted user
-void editUser(int userId, User editValue);	// Function to edit an existed user
+User* userList;
+int userCount;
+int loggedUser;
+int isAdmin;
+User loggedInUser;
+int userIdStart;
+
+//functions
+User* getUserById(int userId);
+User* registerUser();  //register user
+void displayAllUsers();
+void deleteUser();  //delete user
+void updateUser();   //update user
+void saveUserList();        //save data
+void loadUserList();      //load data
+void viewUser();  //view profiles
+void initializeUserList(); //initialize list
+void loginUser();        //login function
+void closeUserModule();
+int createUser();

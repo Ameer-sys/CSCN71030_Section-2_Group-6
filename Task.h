@@ -1,21 +1,39 @@
 #pragma once
-
 #include <time.h>
 #include "User.h"
-#include "Task.h"
+
+// Maximum number of users that can be assigned
+#define MAX_USERS 10
+#define MAX_TASKS 100
 
 // Define Task structure
 typedef struct task {
-	char title[256];
-	int priority;
-	int status;
-	time_t startDate;
-	time_t dueDate;
-	char description[1024];
-	User assignedUsers[10];
+    int task_id;
+    char title[256];
+    int priority;
+    int status;
+    char startDate[11];
+    char dueDate[11];
+    char description[1024];
+    User assignedUsers[MAX_USERS];
+    int userCount;                  // Count of users assigned to this task
+    int bucketId;                   // Additional field for grouping tasks, if needed
 } Task;
 
-// Functions operating in Task Module
-void displayTaskDetails(int taskId);			// Function to display a specific task in the terminal
-Task createNewTask();							// Function that receives input from user to create a new task
-void editTask(int taskId, Task editedValue);	// Function to edit an existed task
+// Declare tasks array with fixed size
+extern Task tasks[MAX_TASKS];
+extern int taskCount;
+
+
+// Function declarations
+int generateUniqueTaskId();           // Generates a unique task ID
+void addTask();                       // Adds a new task
+void editTask();                      // Edits an existing task
+void deleteTask();                    // Deletes a task
+void deleteTaskById(int taskId);
+void saveTasksToFile(const char* filePath);  // Saves tasks to a file
+void loadTasksFromFile(const char* filePath);
+void displayTasks();                  // Displays the list of tasks
+void viewTask();
+void exitProgram();                   // Exits the program and saves tasks 
+void deleteAllTasksInBucket();
