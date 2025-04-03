@@ -7,7 +7,9 @@
 #include "User.h"
 #include "Task.h"
 
-int main(void) {
+int main(int argc, char* argv[]) {
+	int randomStart = atoi(argv[1]);
+	userIdStart = randomStart;
 	initializeUserList();
 
 	printf("Welcome to To Do List Application\n");

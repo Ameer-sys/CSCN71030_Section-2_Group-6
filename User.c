@@ -10,6 +10,7 @@ User* userList = NULL;
 int userCount = 0;
 int loggedUser = -1;
 int isAdmin = 0;
+int userIdStart = 0;
 
 
 User* getUserById(int userId)
@@ -44,7 +45,7 @@ User* registerUser() {
             exit(1);
         }
 
-        userList[userCount - 1].userID = rand() % 100;
+        userList[userCount - 1].userID = rand() % userIdStart;
         printf("Your UserID is: %d\n", userList[userCount - 1].userID);
 
 

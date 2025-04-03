@@ -23,6 +23,7 @@ int userCount;
 int loggedUser;
 int isAdmin;
 User loggedInUser;
+int userIdStart;
 
 //functions
 User* getUserById(int userId);
